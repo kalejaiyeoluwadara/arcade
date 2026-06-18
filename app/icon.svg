@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Outer Shadow / Outline of Handheld Console -->
+  <rect x="4" y="2" width="24" height="29" rx="3.5" fill="#1a1500" />
+  
+  <!-- Top tabs details (screws or loops) -->
+  <rect x="7" y="0" width="5" height="3" rx="1" fill="#1a1500" />
+  <rect x="20" y="0" width="5" height="3" rx="1" fill="#1a1500" />
+  
+  <!-- Outer Shell Main Body -->
+  <rect x="5" y="3" width="22" height="27" rx="2.5" fill="#f7c500" />
+  <rect x="8" y="1" width="3" height="2" fill="#ffd524" />
+  <rect x="21" y="1" width="3" height="2" fill="#ffd524" />
+
+  <!-- Shell Highlights and Shadows to give it a 3D feeling -->
+  <!-- Top/Left Highlight -->
+  <path d="M 6 4 L 26 4 L 26 5 L 6 5 Z" fill="#ffd524" />
+  <path d="M 6 4 L 6 28 L 7 28 L 7 5 Z" fill="#ffd524" />
+  <!-- Bottom/Right Shadow -->
+  <path d="M 6 29 L 26 29 L 26 30 L 6 30 Z" fill="#cf9c00" />
+  <path d="M 26 5 L 26 29 L 27 29 L 27 5 Z" fill="#cf9c00" />
+
+  <!-- Bezel Area (Dark Grey Border) -->
+  <rect x="7" y="5" width="18" height="12" rx="1" fill="#0e0e0c" stroke="#1a1500" stroke-width="0.5" />
+  
+  <!-- Bezel Accents: Lightning Bolts -->
+  <!-- Left Bolt -->
+  <path d="M7.8 8.5 L8.6 8.5 L8 10.5 H8.7 L7.8 13.5 L8.2 11 H7.6 Z" fill="#ffffff" opacity="0.95" />
+  <!-- Right Bolt -->
+  <path d="M24.2 8.5 L23.4 8.5 L24 10.5 H23.3 L24.2 13.5 L23.8 11 H24.4 Z" fill="#ffffff" opacity="0.95" />
+
+  <!-- LCD Screen Area -->
+  <rect x="9" y="6" width="14" height="10" fill="#9ead86" stroke="#2d3528" stroke-width="0.5" />
+
+  <!-- Game Graphics on LCD Screen: Brick Shooter! -->
+  <!-- We want to draw classic game blocks inside the screen (color: #3f4f3a) -->
+  <g fill="#3f4f3a">
+    <!-- Level/Score details on the right of the LCD (a column of mini blocks) -->
+    <!-- In our game, the playfield is usually on the left and score is on the right -->
+    <line x1="19" y1="6" x2="19" y2="16" stroke="#2d3528" stroke-width="0.5" stroke-dasharray="1 1" />
+    
+    <!-- Playfield bricks (falling blocks on left side: x=9 to 18) -->
+    <!-- Standard block sizes are 2x2. -->
+    <!-- Falling block at top-left: -->
+    <rect x="10" y="7" width="2" height="2" />
+    <rect x="12" y="7" width="2" height="2" />
+    <rect x="12" y="9" width="2" height="2" />
+    
+    <!-- Obstacle blocks or target blocks -->
+    <rect x="16" y="8" width="2" height="2" />
+
+    <!-- Player ship bullet: 1x2 dot -->
+    <rect x="13.5" y="11" width="1" height="2" />
+
+    <!-- Player Ship at bottom of playfield: -->
+    <!-- Shape: A T-like brick shooter ship -->
+    <!-- Center: x=14, y=14 -->
+    <rect x="13" y="13" width="2" height="1" />
+    <rect x="11" y="14" width="6" height="1.5" />
+
+    <!-- Right-side Score/Speed Panel Details: -->
+    <!-- Heart or score representation or mini digit -->
+    <rect x="20.5" y="7" width="2" height="1" />
+    <rect x="20.5" y="9.5" width="2" height="2" />
+    <rect x="20.5" y="13" width="2.5" height="1" />
+  </g>
+
+  <!-- Brand Print below screen (Han Cheng style) -->
+  <rect x="12" y="18" width="8" height="0.6" rx="0.3" fill="#1a1500" opacity="0.75" />
+
+  <!-- Controls Area -->
+
+  <!-- D-pad (Left Side) -->
+  <!-- Horizontal arm of cross -->
+  <rect x="8.5" y="22" width="6" height="2" fill="#efefe8" rx="0.5" stroke="#1a1500" stroke-width="0.5" />
+  <!-- Vertical arm of cross -->
+  <rect x="10.5" y="20" width="2" height="6" fill="#efefe8" rx="0.5" stroke="#1a1500" stroke-width="0.5" />
+  <!-- Center hub details -->
+  <circle cx="11.5" cy="23" r="0.7" fill="#d6d6cd" />
+
+  <!-- Action Buttons (Right Side) -->
+  <!-- Button A (Large, Red) -->
+  <circle cx="22" cy="21.5" r="2.3" fill="#ff6a5a" stroke="#1a1500" stroke-width="0.5" />
+  <circle cx="21" cy="20.5" r="0.6" fill="#ffffff" opacity="0.65" />
+  <!-- Button B (Small, Red) -->
+  <circle cx="18.5" cy="24.5" r="1.7" fill="#ff6a5a" stroke="#1a1500" stroke-width="0.5" />
+  <circle cx="17.8" cy="23.8" r="0.4" fill="#ffffff" opacity="0.65" />
+
+  <!-- Pill/System Buttons (Center Bottom) -->
+  <!-- Reset (angled small pill) -->
+  <rect x="13" y="27.5" width="2.5" height="1" rx="0.5" fill="#efefe8" stroke="#1a1500" stroke-width="0.4" transform="rotate(-15, 14.25, 28)" />
+  <!-- Sound/Start (angled small pill) -->
+  <rect x="16.5" y="27.5" width="2.5" height="1" rx="0.5" fill="#efefe8" stroke="#1a1500" stroke-width="0.4" transform="rotate(-15, 17.75, 28)" />
+</svg>
