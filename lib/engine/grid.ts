@@ -48,6 +48,11 @@ export function setCells(fb: FrameBuffer, cells: Position[]): void {
   for (const c of cells) setCell(fb, c.x, c.y);
 }
 
+interface RenderOptions {
+  /** Draw faint off-segment dots + an occasional LCD refresh flicker. */
+  effects?: boolean;
+}
+
 /**
  * Draw the frame buffer to the canvas as classic Brick-Game blocks:
  * an outlined dark square with a small filled dot in the centre.
@@ -57,21 +62,39 @@ export function renderFrame(
   ctx: CanvasRenderingContext2D,
   fb: FrameBuffer,
   grid: GridConfig,
+  opts: RenderOptions = {},
 ): void {
   const { cell } = grid;
   const w = grid.cols * cell;
   const h = grid.rows * cell;
 
   ctx.imageSmoothingEnabled = false;
-  ctx.fillStyle = LCD.background;
+  // Subtle LCD refresh flicker: a 1-frame lighter wash now and then.
+  const flicker = opts.effects && Math.random() < 0.025;
+  ctx.fillStyle = flicker ? LCD.light : LCD.background;
   ctx.fillRect(0, 0, w, h);
 
   for (let r = 0; r < grid.rows; r++) {
     for (let c = 0; c < grid.cols; c++) {
-      if (!fb[r][c]) continue;
-      drawBlock(ctx, c * cell, r * cell, cell);
+      if (fb[r][c]) {
+        drawBlock(ctx, c * cell, r * cell, cell);
+      } else if (opts.effects) {
+        drawGhost(ctx, c * cell, r * cell, cell);
+      }
     }
   }
+}
+
+// Faint "unlit segment" dot — uses --lcd-light so the screen reads as a real LCD
+// even where nothing is drawn. Stays within the 4-colour palette.
+function drawGhost(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  cell: number,
+): void {
+  ctx.fillStyle = LCD.light;
+  ctx.fillRect(x + cell / 2 - 1, y + cell / 2 - 1, 2, 2);
 }
 
 function drawBlock(

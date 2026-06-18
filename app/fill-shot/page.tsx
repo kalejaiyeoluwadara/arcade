@@ -1,5 +1,12 @@
-import ComingSoon from "@/components/ComingSoon";
+"use client";
+
+import GameConsole from "@/components/GameConsole";
+import { fillShotGame } from "@/games/fillShot";
 
 export default function FillShotPage() {
-  return <ComingSoon title="FILL SHOT" />;
+  return (
+    <main className="page">
+      <GameConsole def={fillShotGame} />
+    </main>
+  );
 }

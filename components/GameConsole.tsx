@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useGameStore } from "@/lib/engine/store";
+import { DIFFICULTY_FACTOR, useGameStore } from "@/lib/engine/store";
 import { useGameLoop } from "@/lib/engine/gameLoop";
 import { InputManager } from "@/lib/engine/input";
 import { clearFrame, createFrame, renderFrame } from "@/lib/engine/grid";
 import { playSound, unlockAudio } from "@/lib/engine/sound";
+import { vibrate } from "@/lib/engine/haptics";
 import type {
   FrameBuffer,
   GameDefinition,
@@ -31,13 +32,20 @@ export default function GameConsole<S>({ def }: { def: GameDefinition<S> }) {
   const beep = (name: Parameters<GameEvents["sound"]>[0]) => {
     if (!useGameStore.getState().muted) playSound(name);
   };
+  // Sound (respects mute) + haptic buzz (always, where supported).
+  const feedback = (name: Parameters<GameEvents["sound"]>[0]) => {
+    beep(name);
+    vibrate(name);
+  };
 
   const draw = () => {
     const ctx = canvasRef.current?.getContext("2d");
     if (!ctx) return;
     clearFrame(fbRef.current);
     def.draw(stateRef.current, fbRef.current);
-    renderFrame(ctx, fbRef.current, def.grid);
+    renderFrame(ctx, fbRef.current, def.grid, {
+      effects: useGameStore.getState().lcdEffects,
+    });
   };
 
   const startGame = () => {
@@ -62,7 +70,7 @@ export default function GameConsole<S>({ def }: { def: GameDefinition<S> }) {
       if (action === "pause") {
         if (s.status === "playing") {
           s.setStatus("paused");
-          if (!s.muted) playSound("pause");
+          feedback("pause");
         } else if (s.status === "paused") {
           s.setStatus("playing");
         }
@@ -71,7 +79,7 @@ export default function GameConsole<S>({ def }: { def: GameDefinition<S> }) {
       // start
       if (s.status === "playing") {
         s.setStatus("paused");
-        if (!s.muted) playSound("pause");
+        feedback("pause");
       } else if (s.status === "paused") {
         s.setStatus("playing");
       } else {
@@ -97,7 +105,10 @@ export default function GameConsole<S>({ def }: { def: GameDefinition<S> }) {
   // --- fixed-timestep loop ---
   useGameLoop({
     running: status === "playing",
-    getStepMs: () => 1000 / def.fps(useGameStore.getState().level),
+    getStepMs: () => {
+      const s = useGameStore.getState();
+      return 1000 / (def.fps(s.level) * DIFFICULTY_FACTOR[s.difficulty]);
+    },
     onStep: () => {
       const store = useGameStore.getState();
       if (store.status !== "playing") return;
@@ -110,7 +121,7 @@ export default function GameConsole<S>({ def }: { def: GameDefinition<S> }) {
           const cur = useGameStore.getState();
           if (lvl !== cur.level) {
             cur.setLevel(lvl);
-            beep("levelup");
+            feedback("levelup");
           }
         },
         loseLife: () => {
@@ -119,22 +130,23 @@ export default function GameConsole<S>({ def }: { def: GameDefinition<S> }) {
           cur.setLives(remaining);
           if (remaining <= 0) {
             cur.setStatus("gameover");
-            beep("gameover");
+            feedback("gameover");
           } else {
-            beep("hit");
+            feedback("hit");
           }
         },
         gameOver: () => {
           useGameStore.getState().setStatus("gameover");
-          beep("gameover");
+          feedback("gameover");
         },
-        sound: beep,
+        sound: feedback,
       };
 
       def.tick(stateRef.current, {
         input: inputRef.current!,
         events,
         level: store.level,
+        difficulty: DIFFICULTY_FACTOR[store.difficulty],
       });
       draw();
     },
@@ -205,7 +217,16 @@ function renderOverlay(status: string, instructions: string) {
   return (
     <>
       <strong>PRESS START</strong>
-      <span style={{ fontSize: 6, lineHeight: 1.6 }}>{instructions}</span>
+      <small
+        style={{
+          fontSize: 6,
+          lineHeight: 1.7,
+          whiteSpace: "pre-line",
+          marginTop: 4,
+        }}
+      >
+        {instructions}
+      </small>
     </>
   );
 }

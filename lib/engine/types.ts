@@ -63,6 +63,8 @@ export interface TickContext {
   input: InputReader;
   events: GameEvents;
   level: number;
+  /** Speed/spawn scalar from the difficulty setting (0.8 easy … 1.3 hard). */
+  difficulty: number;
 }
 
 /**

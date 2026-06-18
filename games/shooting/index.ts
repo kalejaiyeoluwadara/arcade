@@ -72,7 +72,7 @@ export const shootingGame: GameDefinition<ShootingState> = {
   },
 
   tick(s, ctx: TickContext) {
-    const { input, events, level } = ctx;
+    const { input, events, level, difficulty } = ctx;
 
     // 1. Move the ship (one cell per tick while held).
     const left = input.isHeld("left");
@@ -130,8 +130,8 @@ export const shootingGame: GameDefinition<ShootingState> = {
       }
     }
 
-    // 5. Spawn new enemies from the top.
-    if (++s.spawnTimer >= spawnStep(level)) {
+    // 5. Spawn new enemies from the top (faster at higher difficulty).
+    if (++s.spawnTimer >= Math.max(4, Math.round(spawnStep(level) / difficulty))) {
       s.spawnTimer = 0;
       if (s.enemies.length < MAX_ENEMIES) {
         s.enemies.push({

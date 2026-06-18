@@ -364,8 +364,63 @@ canvas {
   background: var(--lcd-light);
 }
 
-.menu__item span:last-child {
+.menu__name {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.menu__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.menu__hi {
+  font-family: var(--font-digit);
   font-size: 14px;
+  line-height: 1;
+  opacity: 0.85;
+}
+
+.menu__icon {
+  font-size: 14px;
+}
+
+/* Settings */
+.home-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 6px 0 4px;
+}
+
+.setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.setting__label {
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  color: var(--shell-edge);
+}
+
+.setting__opts {
+  display: flex;
+  gap: 4px;
+}
+
+.setting__opts .btn-pill {
+  padding: 5px 8px;
+}
+
+.btn-pill--active {
+  background: #f3d784;
+  color: #2a2206;
+  border-color: var(--shell-edge);
 }
 
 .menu__hint {

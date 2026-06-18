@@ -1,5 +1,12 @@
-import ComingSoon from "@/components/ComingSoon";
+"use client";
+
+import GameConsole from "@/components/GameConsole";
+import { tankGame } from "@/games/tank";
 
 export default function TankPage() {
-  return <ComingSoon title="TANK BATTLE" />;
+  return (
+    <main className="page">
+      <GameConsole def={tankGame} />
+    </main>
+  );
 }
