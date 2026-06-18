@@ -1,26 +1,378 @@
 @import "tailwindcss";
 
+/* ============================================================
+   Brick Shooter — global LCD theme
+   Only the 4 LCD colors are allowed INSIDE the screen.
+   The plastic shell around it may use normal styling.
+   ============================================================ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --lcd-background: #9ead86;
+  --lcd-light: #b8c6a5;
+  --lcd-dark: #3f4f3a;
+  --lcd-outline: #2d3528;
+
+  /* plastic shell (outside the LCD only) */
+  --shell: #e7b43c;
+  --shell-dark: #c9952a;
+  --shell-edge: #8a6516;
+  --bezel: #20271c;
+  --bezel-edge: #11150f;
+
+  --cell: 16px;
+
+  --font-pixel: var(--font-press-start), monospace;
+  --font-digit: var(--font-vt323), monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  height: 100%;
+  margin: 0;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #2a2622;
+  color: var(--lcd-dark);
+  font-family: var(--font-digit);
+  -webkit-font-smoothing: none;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+/* No anti-aliasing on the canvas — keep the LCD blocky */
+canvas {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* ---------- App page wrapper ---------- */
+.page {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+/* ============================================================
+   Handheld shell
+   ============================================================ */
+.shell {
+  width: 100%;
+  max-width: 380px;
+  background: linear-gradient(160deg, var(--shell), var(--shell-dark));
+  border: 3px solid var(--shell-edge);
+  border-radius: 28px 28px 36px 36px;
+  padding: 18px 18px 24px;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -6px 14px rgba(0, 0, 0, 0.25),
+    0 14px 30px rgba(0, 0, 0, 0.45);
+}
+
+.shell__brand {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-family: var(--font-pixel);
+  font-size: 11px;
+  color: var(--shell-edge);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+}
+
+.shell__brand small {
+  font-size: 7px;
+  opacity: 0.8;
+}
+
+/* ============================================================
+   LCD screen (4-color zone)
+   ============================================================ */
+.lcd {
+  background: var(--bezel);
+  border: 2px solid var(--bezel-edge);
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.lcd__inner {
+  display: flex;
+  gap: 8px;
+  background: var(--lcd-background);
+  border: 2px solid var(--lcd-outline);
+  border-radius: 4px;
+  padding: 8px;
+}
+
+.lcd__playfield {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.lcd__canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--lcd-background);
+}
+
+/* On-screen overlay text (PAUSE / GAME OVER / PRESS START) */
+.lcd__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-pixel);
+  color: var(--lcd-dark);
+  text-align: center;
+  padding: 8px;
+}
+
+.lcd__overlay strong {
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.lcd__overlay span {
+  font-size: 7px;
+  animation: lcd-blink 1s steps(1) infinite;
+}
+
+@keyframes lcd-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ============================================================
+   Score panel (digital readouts, inside the LCD zone)
+   ============================================================ */
+.panel {
+  flex: 0 0 70px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--lcd-dark);
+}
+
+.panel__row {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.panel__label {
+  font-family: var(--font-pixel);
+  font-size: 6px;
+  letter-spacing: 0.5px;
+  opacity: 0.85;
+}
+
+.panel__value {
+  font-family: var(--font-digit);
+  font-size: 22px;
+  line-height: 0.9;
+}
+
+.panel__lives {
+  font-size: 16px;
+  letter-spacing: 2px;
+}
+
+.panel__flag {
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  margin-top: auto;
+  min-height: 9px;
+}
+
+.panel__flag--on {
+  animation: lcd-blink 1s steps(1) infinite;
+}
+
+/* ============================================================
+   Controls
+   ============================================================ */
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.controls__mid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+/* D-pad */
+.dpad {
+  display: grid;
+  grid-template-columns: repeat(3, 34px);
+  grid-template-rows: repeat(3, 34px);
+  gap: 2px;
+}
+
+.dpad__btn {
+  background: linear-gradient(160deg, #3a3a3a, #1c1c1c);
+  border: 2px solid #0d0d0d;
+  color: #e7b43c;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.dpad__btn:active,
+.dpad__btn[data-pressed="true"] {
+  background: #141414;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.dpad__up {
+  grid-area: 1 / 2;
+  border-radius: 6px 6px 0 0;
+}
+.dpad__left {
+  grid-area: 2 / 1;
+  border-radius: 6px 0 0 6px;
+}
+.dpad__center {
+  grid-area: 2 / 2;
+  background: #1c1c1c;
+  border-color: #0d0d0d;
+}
+.dpad__right {
+  grid-area: 2 / 3;
+  border-radius: 0 6px 6px 0;
+}
+.dpad__down {
+  grid-area: 3 / 2;
+  border-radius: 0 0 6px 6px;
+}
+
+/* Round action buttons */
+.actions {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.btn-round {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 3px solid var(--shell-edge);
+  background: radial-gradient(circle at 35% 30%, #ff6a5a, #c5392c);
+  color: #fff;
+  font-family: var(--font-pixel);
+  font-size: 12px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.35),
+    0 3px 4px rgba(0, 0, 0, 0.4);
+}
+
+.btn-round:active,
+.btn-round[data-pressed="true"] {
+  transform: translateY(2px);
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.btn-round--b {
+  width: 42px;
+  height: 42px;
+  font-size: 10px;
+}
+
+/* Small pill buttons (start / sound) */
+.btn-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #2c2c2c;
+  border: 2px solid #0d0d0d;
+  border-radius: 999px;
+  color: #e7b43c;
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  padding: 6px 12px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.btn-pill:active,
+.btn-pill[data-pressed="true"] {
+  background: #141414;
+}
+
+/* ============================================================
+   Home menu
+   ============================================================ */
+.menu {
+  width: 100%;
+}
+
+.menu__list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 14px 0 6px;
+}
+
+.menu__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--lcd-background);
+  border: 2px solid var(--lcd-outline);
+  border-radius: 4px;
+  padding: 12px 14px;
+  color: var(--lcd-dark);
+  text-decoration: none;
+  font-family: var(--font-pixel);
+  font-size: 10px;
+}
+
+.menu__item:hover {
+  background: var(--lcd-light);
+}
+
+.menu__item span:last-child {
+  font-size: 14px;
+}
+
+.menu__hint {
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  color: var(--shell-edge);
+  text-align: center;
+  margin-top: 10px;
+  line-height: 1.6;
 }
