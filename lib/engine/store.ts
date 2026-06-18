@@ -44,6 +44,7 @@ interface GameStore {
   setMuted(muted: boolean): void;
   setDifficulty(difficulty: Difficulty): void;
   setLcdEffects(on: boolean): void;
+  resetRun(): void;
 }
 
 function loadHiScores(): HiScores {
@@ -144,5 +145,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
       localStorage.setItem(EFFECTS_KEY, on ? "1" : "0");
     }
     set({ lcdEffects: on });
+  },
+
+  resetRun() {
+    set({ status: "idle", score: 0, level: 1, lives: 0 });
   },
 }));

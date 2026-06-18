@@ -26,7 +26,6 @@ export default function GameConsole<S>({ def }: { def: GameDefinition<S> }) {
   const fbRef = useRef<FrameBuffer>(createFrame(def.grid));
 
   const status = useGameStore((s) => s.status);
-  const muted = useGameStore((s) => s.muted);
 
   // --- helpers (read live store state via getState to avoid stale closures) ---
   const beep = (name: Parameters<GameEvents["sound"]>[0]) => {
@@ -157,41 +156,77 @@ export default function GameConsole<S>({ def }: { def: GameDefinition<S> }) {
     inputRef.current?.press(action);
   };
   const release = (action: InputAction) => inputRef.current?.release(action);
+  const reset = () => {
+    stateRef.current = def.createState();
+    inputRef.current?.reset();
+    useGameStore.getState().resetRun();
+    draw();
+  };
 
   const overlay = renderOverlay(status, def.instructions);
-  const startLabel =
-    status === "playing" ? "PAUSE" : status === "paused" ? "RESUME" : "START";
 
   return (
-    <HandheldShell title="BRICK SHOOTER">
+    <HandheldShell>
       <LCDScreen grid={def.grid} canvasRef={canvasRef} overlay={overlay}>
         <ScorePanel label={def.label} />
       </LCDScreen>
 
-      <div className="controls">
+      <div className="device__controls">
         <DPad press={press} release={release} />
 
-        <div className="controls__mid">
-          <button
-            type="button"
-            className="btn-pill"
-            onPointerDown={(e) => {
-              e.preventDefault();
-              press("start");
-            }}
-          >
-            {startLabel}
-          </button>
-          <button
-            type="button"
-            className="btn-pill"
-            onPointerDown={(e) => {
-              e.preventDefault();
-              press("mute");
-            }}
-          >
-            {muted ? "SOUND ✕" : "SOUND ♪"}
-          </button>
+        <div className="device__sys">
+          <div className="device__sys-row">
+            <span className="ctl">
+              <button
+                type="button"
+                className="btn3d btn3d--sm"
+                aria-label="On/Off (start)"
+                onPointerDown={(e) => {
+                  e.preventDefault();
+                  press("start");
+                }}
+              />
+              <span className="ctl__label">ON/OFF</span>
+            </span>
+            <span className="ctl">
+              <button
+                type="button"
+                className="btn3d btn3d--sm"
+                aria-label="Reset"
+                onPointerDown={(e) => {
+                  e.preventDefault();
+                  reset();
+                }}
+              />
+              <span className="ctl__label">RESET</span>
+            </span>
+          </div>
+
+          <span className="ctl">
+            <button
+              type="button"
+              className="btn3d btn3d--pill"
+              aria-label="Start / Pause"
+              onPointerDown={(e) => {
+                e.preventDefault();
+                press("start");
+              }}
+            />
+            <span className="ctl__label">S/P</span>
+          </span>
+
+          <span className="ctl">
+            <button
+              type="button"
+              className="btn3d btn3d--pill"
+              aria-label="Sound"
+              onPointerDown={(e) => {
+                e.preventDefault();
+                press("mute");
+              }}
+            />
+            <span className="ctl__label">SOUND</span>
+          </span>
         </div>
 
         <ActionButtons press={press} release={release} />

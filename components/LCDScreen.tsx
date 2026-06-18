@@ -16,8 +16,10 @@ export default function LCDScreen({
   const height = grid.rows * grid.cell;
 
   return (
-    <div className="lcd">
-      <div className="lcd__inner">
+    <div className="device__screen">
+      <span className="screen-bolt screen-bolt--l" aria-hidden />
+      <span className="screen-bolt screen-bolt--r" aria-hidden />
+      <div className="screen-inner">
         <div className="lcd__playfield">
           <canvas
             ref={canvasRef}

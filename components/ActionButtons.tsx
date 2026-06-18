@@ -2,7 +2,8 @@
 
 import type { InputAction } from "@/lib/engine/types";
 
-// A and B both fire (the device only ever has one projectile on screen).
+// The two large round buttons. Both fire (ROTATE doubles as the action button on
+// the original device for non-Tetris games).
 export default function ActionButtons({
   press,
   release,
@@ -21,13 +22,12 @@ export default function ActionButtons({
   };
 
   return (
-    <div className="actions">
-      <button type="button" className="btn-round btn-round--b" aria-label="B (fire)" {...fire}>
-        B
-      </button>
-      <button type="button" className="btn-round" aria-label="A (fire)" {...fire}>
-        A
-      </button>
+    <div className="device__act">
+      <button type="button" className="btn3d btn3d--lg" aria-label="Fire" {...fire} />
+      <span className="ctl">
+        <button type="button" className="btn3d btn3d--lg" aria-label="Rotate / Fire" {...fire} />
+        <span className="ctl__label">ROTATE</span>
+      </span>
     </div>
   );
 }

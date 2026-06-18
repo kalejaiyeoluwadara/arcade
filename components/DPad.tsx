@@ -2,6 +2,7 @@
 
 import type { Direction, InputAction } from "@/lib/engine/types";
 
+// White moulded cross D-pad, like the classic Brick Game.
 export default function DPad({
   press,
   release,
@@ -20,20 +21,19 @@ export default function DPad({
   });
 
   return (
-    <div className="dpad" role="group" aria-label="D-pad">
-      <button type="button" className="dpad__btn dpad__up" aria-label="Up" {...bind("up")}>
-        ▲
-      </button>
-      <button type="button" className="dpad__btn dpad__left" aria-label="Left" {...bind("left")}>
-        ◄
-      </button>
-      <div className="dpad__btn dpad__center" aria-hidden />
-      <button type="button" className="dpad__btn dpad__right" aria-label="Right" {...bind("right")}>
-        ►
-      </button>
-      <button type="button" className="dpad__btn dpad__down" aria-label="Down" {...bind("down")}>
-        ▼
-      </button>
+    <div className="dpad-cross" role="group" aria-label="D-pad">
+      <span className="dpad-cross__lbl dpad-cross__lbl--up">UP</span>
+      <span className="dpad-cross__lbl dpad-cross__lbl--left">LEFT</span>
+      <span className="dpad-cross__lbl dpad-cross__lbl--right">RIGHT</span>
+      <span className="dpad-cross__lbl dpad-cross__lbl--down">DOWN</span>
+
+      <div className="dpad-cross__grid">
+        <button type="button" className="dpad-cross__arm dpad-cross__up" aria-label="Up" {...bind("up")} />
+        <button type="button" className="dpad-cross__arm dpad-cross__left" aria-label="Left" {...bind("left")} />
+        <span className="dpad-cross__hub" aria-hidden />
+        <button type="button" className="dpad-cross__arm dpad-cross__right" aria-label="Right" {...bind("right")} />
+        <button type="button" className="dpad-cross__arm dpad-cross__down" aria-label="Down" {...bind("down")} />
+      </div>
     </div>
   );
 }
