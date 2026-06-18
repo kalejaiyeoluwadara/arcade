@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Press_Start_2P, VT323 } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 const pressStart = Press_Start_2P({
@@ -33,7 +34,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${pressStart.variable} ${vt323.variable}`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
