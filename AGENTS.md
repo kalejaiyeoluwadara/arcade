@@ -6,7 +6,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # Project: Brick Shooter
 
-Faithful web recreation of the shooting games from "Brick Game 9999 in 1" LCD
+Web recreation of the shooting games from "Brick Game 9999 in 1" LCD
 handhelds. It must feel like the original plastic device, **not** a modern remake.
 Full plan and per-version specs live in [`docs/ROADMAP.md`](docs/ROADMAP.md) — read
 it before starting a build phase.

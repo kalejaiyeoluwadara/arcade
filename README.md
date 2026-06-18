@@ -1,6 +1,6 @@
 # Brick Shooter
 
-Brick Shooter is a faithful web recreation of the classic shooting and block games found on the original "Brick Game 9999 in 1" LCD handheld consoles. This project is designed to replicate the exact limitations and look of the retro plastic device, prioritizing nostalgia, authentic LCD constraints, and cell-based grid movement over modern graphics and animations.
+Brick Shooter is a web recreation of the classic shooting and block games found on the original "Brick Game 9999 in 1" LCD handheld consoles. This project is designed to replicate the exact limitations and look of the retro plastic device, prioritizing nostalgia, authentic LCD constraints, and cell-based grid movement over modern graphics and animations.
 
 ## Technical Stack
 

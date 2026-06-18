@@ -19,7 +19,7 @@ const vt323 = VT323({
 export const metadata: Metadata = {
   title: "Brick Shooter — Retro LCD Handheld",
   description:
-    "Faithful web recreation of the shooting games from classic Brick Game 9999-in-1 LCD handhelds.",
+    "Web recreation of the shooting games from classic Brick Game 9999-in-1 LCD handhelds.",
 };
 
 export const viewport: Viewport = {
